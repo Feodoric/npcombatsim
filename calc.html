@@ -48,11 +48,11 @@ label, input[type=button]{
 		function simulateBattle(){
 			var forces = {
 				att: $('attforce').get('value'),
-				def: $('defforce').get('value') + 1
+				def: $('defforce').get('value')
 			},
 			weapons = {
 				att: $('attweap').get('value'),
-				def: $('defweap').get('value')
+				def: +$('defweap').get('value') + 1
 			},
 			rounds = calcRounds(forces, weapons),
 			remainder = getRemaining(forces, weapons, rounds),
