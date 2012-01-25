@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+
+form{
+	width: 300px;
+	overflow: hidden;
+	margin: 0 auto;
+}
+
+label, input {
+	clear: left;
+	float: left;
+}
+
+label, input[type=button]{
+	margin-top: 5px;
+}
+
+</style>
+</head>
+<body>
+
+	<form>
+		<label for="defforce">Defender Forces</label>
+		<input id="defforce" type="text">
+		
+		<label for="defweap">Defender Weapon Tech <br>(base, don't add defender bonus)</label>
+		<input id="defweap" type="text">
+		
+		<label for="attforce">Attacker Forces</label>
+		<input id="attforce" type="text">
+		
+		<label for="attweap">Attacker Weapon Tech</label>
+		<input id="attweap" type="text">
+		
+		<input type="button" id="calc" value="Simulate">
+	</form>
+	
+	<div id="results"></div>
+	
+	<script src="//ajax.googleapis.com/ajax/libs/mootools/1.4.1/mootools-yui-compressed.js"></script>
+	
+	<script>
+		$('calc').addEvent('click', simulateBattle);
+		
+		function simulateBattle(){
+			var forces = {
+				att: $('attforce').get('value'),
+				def: $('defforce').get('value') + 1
+			},
+			weapons = {
+				att: $('attweap').get('value'),
+				def: $('defweap').get('value')
+			},
+			rounds = calcRounds(forces, weapons),
+			remainder = getRemaining(forces, weapons, rounds),
+			victor = (remainder.att > remainder.def) ? 'Attacker' : 'Defender';
+			
+			$('results').set('html', 'The victor will be: ' + victor + '<br>' 
+				+ 'Attacker has ' + remainder.att + ' ships remaining <br>'
+				+ 'Defender has ' + remainder.def + ' ships remaining <br>'			
+			);
+		}
+		
+		function getRemaining(forces, weapons, rounds){
+			var attRemaining = Math.max(forces.att -  (weapons.def * rounds), 0),
+				defRemaining;
+				
+				if (attRemaining === 0){
+					defRemaining = forces.def - (weapons.att * (rounds - 1));
+				} else {
+					defRemaining = Math.max(forces.def - (weapons.att * rounds), 0);
+				}
+				
+			return {att: attRemaining, def: defRemaining};
+		}
+		
+		function calcRounds(forces, weapons){
+			return Math.min(
+				Math.ceil(forces.att / weapons.def),
+				Math.ceil(forces.def / weapons.att)
+			);
+		}
+	
+	</script>
+</body>
+</html>
